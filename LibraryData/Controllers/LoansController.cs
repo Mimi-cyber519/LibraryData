@@ -60,12 +60,11 @@ namespace LibraryData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Date,BookId,MemberId")] Loan loan)
         {
-            if (ModelState.IsValid)
-            {
+
                 _context.Add(loan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Id", loan.BookId);
             ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Id", loan.MemberId);
             return View(loan);
@@ -101,8 +100,7 @@ namespace LibraryData.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+
                 try
                 {
                     _context.Update(loan);
@@ -120,7 +118,7 @@ namespace LibraryData.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Id", loan.BookId);
             ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Id", loan.MemberId);
             return View(loan);

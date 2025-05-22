@@ -55,12 +55,11 @@ namespace LibraryData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Publisher publisher)
         {
-            if (ModelState.IsValid)
-            {
+
                 _context.Add(publisher);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
             return View(publisher);
         }
 
@@ -92,8 +91,7 @@ namespace LibraryData.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+
                 try
                 {
                     _context.Update(publisher);
@@ -111,7 +109,7 @@ namespace LibraryData.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            
             return View(publisher);
         }
 

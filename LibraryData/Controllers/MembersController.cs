@@ -55,12 +55,11 @@ namespace LibraryData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Address,PhoneNum")] Member member)
         {
-            if (ModelState.IsValid)
-            {
+
                 _context.Add(member);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
             return View(member);
         }
 
@@ -92,8 +91,7 @@ namespace LibraryData.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+ 
                 try
                 {
                     _context.Update(member);
@@ -111,7 +109,7 @@ namespace LibraryData.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            
             return View(member);
         }
 
