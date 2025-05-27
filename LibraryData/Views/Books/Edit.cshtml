@@ -25,9 +25,19 @@
             </div>
             <div class="form-group">
                 <label asp-for="AuthorId" class="control-label"></label>
-                <select asp-for="AuthorId" class="form-control" asp-items="ViewBag.AuthorId"></select>
+                <select asp-for="AuthorId" class="form-control" asp-items="ViewBag.AuthorList"></select>
                 <span asp-validation-for="AuthorId" class="text-danger"></span>
             </div>
+            <div class="form-group">
+        <label>Genres</label>
+        <select name="SelectedGenres" class="form-control" multiple 
+                asp-items="ViewBag.GenreList"></select>
+    </div>
+    <div class="form-group">
+        <label>Publishers</label>
+        <select name="SelectedPublishers" class="form-control" multiple 
+                asp-items="ViewBag.PublisherList"></select>
+    </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

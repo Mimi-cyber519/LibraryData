@@ -10,24 +10,16 @@
     <h4>Book</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Year)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Year)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Author)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Author.Id)
-        </dd>
+        <dt>Title</dt>
+    <dd>@Model.Title</dd>
+    <dt>Year</dt>
+    <dd>@Model.Year</dd>
+    <dt>Author</dt>
+    <dd>@Model.Author?.Name</dd>
+    <dt>Genres</dt>
+    <dd>@string.Join(", ", Model.BookGenres.Select(bg => bg.Genre.Name))</dd>
+    <dt>Publishers</dt>
+    <dd>@string.Join(", ", Model.BookPublishers.Select(bp => bp.Publisher.Name))</dd>
     </dl>
 </div>
 <div>

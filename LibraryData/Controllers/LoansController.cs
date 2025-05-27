@@ -48,8 +48,8 @@ namespace LibraryData.Controllers
         // GET: Loans/Create
         public IActionResult Create()
         {
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Id");
-            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Id");
+            ViewBag.BookList = new SelectList(_context.Books, "Id", "Title");
+            ViewBag.MemberList = new SelectList(_context.Members, "Id", "Name");
             return View();
         }
 
@@ -83,8 +83,8 @@ namespace LibraryData.Controllers
             {
                 return NotFound();
             }
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Id", loan.BookId);
-            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Id", loan.MemberId);
+            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title", loan.BookId);
+            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Name", loan.MemberId);
             return View(loan);
         }
 

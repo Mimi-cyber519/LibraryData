@@ -21,33 +21,35 @@ namespace LibraryData.Controllers
         // GET: Books
         public async Task<IActionResult> Index()
         {
-            var libraryContext = _context.Books.Include(b => b.Author);
-            return View(await libraryContext.ToListAsync());
+            var books = await _context.Books
+        .Include(b => b.Author)
+        .Include(b => b.BookGenres)
+            .ThenInclude(bg => bg.Genre)
+        .Include(b => b.BookPublishers)
+            .ThenInclude(bp => bp.Publisher)
+        .ToListAsync();
+            return View(books);
         }
 
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var book = await _context.Books
-                .Include(b => b.Author)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (book == null)
-            {
-                return NotFound();
-            }
-
+        .Include(b => b.Author)
+        .Include(b => b.BookGenres)
+            .ThenInclude(bg => bg.Genre)
+        .Include(b => b.BookPublishers)
+            .ThenInclude(bp => bp.Publisher)
+        .FirstOrDefaultAsync(m => m.Id == id);
             return View(book);
         }
 
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Id");
+            ViewBag.AuthorList = new SelectList(_context.Authors, "Id", "Name");
+            ViewBag.GenreList = new MultiSelectList(_context.Genres, "Id", "Name");
+            ViewBag.PublisherList = new MultiSelectList(_context.Publishers, "Id", "Name");
             return View();
         }
 
@@ -56,31 +58,39 @@ namespace LibraryData.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Year,AuthorId")] Book book)
+        public async Task<IActionResult> Create(Book book, int[] SelectedGenres, int[] SelectedPublishers)
         {
 
-                _context.Add(book);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            _context.Books.Add(book);
+            await _context.SaveChangesAsync();
 
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Id", book.AuthorId);
-            return View(book);
+            foreach (var genreId in SelectedGenres)
+            {
+                _context.BookGenres.Add(new BookGenre { BooksId = book.Id, GenresId = genreId });
+            }
+
+            foreach (var publisherId in SelectedPublishers)
+            {
+                _context.BookPublishers.Add(new BookPublisher { BooksId = book.Id, PublishersId = publisherId });
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+
+
 
         // GET: Books/Edit/5
         public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+{
+            var book = await _context.Books
+                .Include(b => b.BookGenres)
+                .Include(b => b.BookPublishers)
+                .FirstOrDefaultAsync(b => b.Id == id);
 
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
-            {
-                return NotFound();
-            }
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Id", book.AuthorId);
+            ViewBag.AuthorList = new SelectList(_context.Authors, "Id", "Name", book.AuthorId);
+            ViewBag.GenreList = new MultiSelectList(_context.Genres, "Id", "Name", book.BookGenres.Select(bg => bg.GenresId));
+            ViewBag.PublisherList = new MultiSelectList(_context.Publishers, "Id", "Name", book.BookPublishers.Select(bp => bp.PublishersId));
             return View(book);
         }
 
@@ -88,34 +98,30 @@ namespace LibraryData.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Year,AuthorId")] Book book)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Book book, int[] SelectedGenres, int[] SelectedPublishers)
         {
-            if (id != book.Id)
+            _context.Update(book);
+
+            // Update genres
+            var currentGenres = await _context.BookGenres.Where(bg => bg.BooksId == book.Id).ToListAsync();
+            _context.BookGenres.RemoveRange(currentGenres);
+            foreach (var genreId in SelectedGenres)
             {
-                return NotFound();
+                _context.BookGenres.Add(new BookGenre { BooksId = book.Id, GenresId = genreId });
             }
 
-                try
-                {
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BookExists(book.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+            // Update publishers
+            var currentPublishers = await _context.BookPublishers.Where(bp => bp.BooksId == book.Id).ToListAsync();
+            _context.BookPublishers.RemoveRange(currentPublishers);
+            foreach (var publisherId in SelectedPublishers)
+            {
+                _context.BookPublishers.Add(new BookPublisher { BooksId = book.Id, PublishersId = publisherId });
+            }
 
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Id", book.AuthorId);
-            return View(book);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
         }
 
         // GET: Books/Delete/5
@@ -128,7 +134,12 @@ namespace LibraryData.Controllers
 
             var book = await _context.Books
                 .Include(b => b.Author)
+                .Include(b => b.BookGenres)
+                    .ThenInclude(bg => bg.Genre)
+                .Include(b => b.BookPublishers)
+                    .ThenInclude(bp => bp.Publisher)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (book == null)
             {
                 return NotFound();
@@ -142,13 +153,21 @@ namespace LibraryData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books
+        .Include(b => b.BookGenres)
+        .Include(b => b.BookPublishers)
+        .FirstOrDefaultAsync(b => b.Id == id);
+
             if (book != null)
             {
+                // Удаляем связанные записи
+                _context.BookGenres.RemoveRange(book.BookGenres);
+                _context.BookPublishers.RemoveRange(book.BookPublishers);
                 _context.Books.Remove(book);
+
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

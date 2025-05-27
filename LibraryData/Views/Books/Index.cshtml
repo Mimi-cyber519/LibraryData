@@ -12,30 +12,22 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Year)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
+            <th>Title</th>
+            <th>Year</th>
+            <th>Author</th>
+            <th>Genres</th>
+            <th>Publishers</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author.Name)
-            </td>
+                <td>@item.Title</td>
+                    <td>@item.Year</td>
+                    <td>@item.Author?.Name</td>
+                    <td>@string.Join(", ", item.BookGenres.Select(bg => bg.Genre.Name))</td>
+                    <td>@string.Join(", ", item.BookPublishers.Select(bp => bp.Publisher.Name))</td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
