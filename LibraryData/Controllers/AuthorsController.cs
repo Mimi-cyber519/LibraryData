@@ -19,9 +19,18 @@ namespace LibraryData.Controllers
         }
 
         // GET: Authors
-        public async Task<IActionResult> Index()
+        // Controller (add this new action)
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Authors.ToListAsync());
+            var authors = from a in _context.Authors
+                          select a;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                authors = authors.Where(a => a.Name.Contains(searchString));
+            }
+
+            return View(await authors.ToListAsync());
         }
 
         // GET: Authors/Details/5
@@ -131,19 +140,19 @@ namespace LibraryData.Controllers
         }
 
         // POST: Authors/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var author = await _context.Authors.FindAsync(id);
-            if (author != null)
-            {
-                _context.Authors.Remove(author);
-            }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    var author = await _context.Authors.FindAsync(id);
+        //    if (author != null)
+        //    {
+        //        _context.Authors.Remove(author);
+        //    }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool AuthorExists(int id)
         {
