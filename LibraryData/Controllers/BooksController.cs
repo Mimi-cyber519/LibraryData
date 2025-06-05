@@ -19,16 +19,27 @@ namespace LibraryData.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        // Controller (BooksController.cs)
+        public async Task<IActionResult> Index(string searchString)
         {
-            var books = await _context.Books
-        .Include(b => b.Author)
-        .Include(b => b.BookGenres)
-            .ThenInclude(bg => bg.Genre)
-        .Include(b => b.BookPublishers)
-            .ThenInclude(bp => bp.Publisher)
-        .ToListAsync();
-            return View(books);
+            var books = _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.BookGenres)
+                    .ThenInclude(bg => bg.Genre)
+                .Include(b => b.BookPublishers)
+                    .ThenInclude(bp => bp.Publisher)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(b =>
+                    b.Title.Contains(searchString) ||
+                    (b.Author != null && b.Author.Name.Contains(searchString)) ||
+                    b.BookGenres.Any(bg => bg.Genre.Name.Contains(searchString)) ||
+                    b.BookPublishers.Any(bp => bp.Publisher.Name.Contains(searchString)));
+            }
+
+            return View(await books.ToListAsync());
         }
 
         // GET: Books/Details/5

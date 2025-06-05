@@ -19,9 +19,17 @@ namespace LibraryData.Controllers
         }
 
         // GET: Genres
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Genres.ToListAsync());
+            var genres = from g in _context.Genres
+                          select g;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                genres = genres.Where(a => a.Name.Contains(searchString));
+            }
+
+            return View(await genres.ToListAsync());
         }
 
         // GET: Genres/Details/5

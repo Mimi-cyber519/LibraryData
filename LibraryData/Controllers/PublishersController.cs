@@ -19,11 +19,17 @@ namespace LibraryData.Controllers
         }
 
         // GET: Publishers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Publishers.ToListAsync());
-        }
+            var publishers = _context.Publishers.AsQueryable();
 
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                publishers = publishers.Where(p => p.Name.Contains(searchString));
+            }
+
+            return View(await publishers.ToListAsync());
+        }
         // GET: Publishers/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -19,10 +19,28 @@ namespace LibraryData.Controllers
         }
 
         // GET: Loans
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string bookTitle, string memberName)
         {
-            var libraryContext = _context.Loans.Include(l => l.Book).Include(l => l.Member);
-            return View(await libraryContext.ToListAsync());
+            var loans = _context.Loans
+                .Include(l => l.Book)
+                .Include(l => l.Member)
+                .AsQueryable();
+
+            // Apply filters
+            if (!string.IsNullOrEmpty(bookTitle))
+            {
+                loans = loans.Where(l => l.Book.Title.Contains(bookTitle));
+            }
+
+            if (!string.IsNullOrEmpty(memberName))
+            {
+                loans = loans.Where(l => l.Member.Name.Contains(memberName));
+            }
+
+            // Default ordering (newest first)
+            loans = loans.OrderByDescending(l => l.Date);
+
+            return View(await loans.ToListAsync());
         }
 
         // GET: Loans/Details/5
