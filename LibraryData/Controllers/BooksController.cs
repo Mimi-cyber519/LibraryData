@@ -18,8 +18,7 @@ namespace LibraryData.Controllers
             _context = context;
         }
 
-        // GET: Books
-        // Controller (BooksController.cs)
+       
         public async Task<IActionResult> Index(string searchString)
         {
             var books = _context.Books
@@ -42,7 +41,7 @@ namespace LibraryData.Controllers
             return View(await books.ToListAsync());
         }
 
-        // GET: Books/Details/5
+    
         public async Task<IActionResult> Details(int? id)
         {
             var book = await _context.Books
@@ -55,7 +54,6 @@ namespace LibraryData.Controllers
             return View(book);
         }
 
-        // GET: Books/Create
         public IActionResult Create()
         {
             ViewBag.AuthorList = new SelectList(_context.Authors, "Id", "Name");
@@ -64,9 +62,7 @@ namespace LibraryData.Controllers
             return View();
         }
 
-        // POST: Books/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Book book, int[] SelectedGenres, int[] SelectedPublishers)
@@ -91,7 +87,6 @@ namespace LibraryData.Controllers
 
 
 
-        // GET: Books/Edit/5
         public async Task<IActionResult> Edit(int? id)
 {
             var book = await _context.Books
@@ -105,16 +100,13 @@ namespace LibraryData.Controllers
             return View(book);
         }
 
-        // POST: Books/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Book book, int[] SelectedGenres, int[] SelectedPublishers)
         {
             _context.Update(book);
 
-            // Update genres
+            
             var currentGenres = await _context.BookGenres.Where(bg => bg.BooksId == book.Id).ToListAsync();
             _context.BookGenres.RemoveRange(currentGenres);
             foreach (var genreId in SelectedGenres)
@@ -122,7 +114,7 @@ namespace LibraryData.Controllers
                 _context.BookGenres.Add(new BookGenre { BooksId = book.Id, GenresId = genreId });
             }
 
-            // Update publishers
+         
             var currentPublishers = await _context.BookPublishers.Where(bp => bp.BooksId == book.Id).ToListAsync();
             _context.BookPublishers.RemoveRange(currentPublishers);
             foreach (var publisherId in SelectedPublishers)
@@ -135,7 +127,7 @@ namespace LibraryData.Controllers
 
         }
 
-        // GET: Books/Delete/5
+  
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -159,7 +151,6 @@ namespace LibraryData.Controllers
             return View(book);
         }
 
-        // POST: Books/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

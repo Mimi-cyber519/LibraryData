@@ -18,7 +18,7 @@ namespace LibraryData.Controllers
             _context = context;
         }
 
-        // GET: Loans
+  
         public async Task<IActionResult> Index(string bookTitle, string memberName)
         {
             var loans = _context.Loans
@@ -26,7 +26,7 @@ namespace LibraryData.Controllers
                 .Include(l => l.Member)
                 .AsQueryable();
 
-            // Apply filters
+        
             if (!string.IsNullOrEmpty(bookTitle))
             {
                 loans = loans.Where(l => l.Book.Title.Contains(bookTitle));
@@ -37,13 +37,12 @@ namespace LibraryData.Controllers
                 loans = loans.Where(l => l.Member.Name.Contains(memberName));
             }
 
-            // Default ordering (newest first)
+            
             loans = loans.OrderByDescending(l => l.Date);
 
             return View(await loans.ToListAsync());
         }
 
-        // GET: Loans/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -63,7 +62,7 @@ namespace LibraryData.Controllers
             return View(loan);
         }
 
-        // GET: Loans/Create
+     
         public IActionResult Create()
         {
             ViewBag.BookList = new SelectList(_context.Books, "Id", "Title");
@@ -71,9 +70,6 @@ namespace LibraryData.Controllers
             return View();
         }
 
-        // POST: Loans/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Date,BookId,MemberId")] Loan loan)
@@ -88,7 +84,6 @@ namespace LibraryData.Controllers
             return View(loan);
         }
 
-        // GET: Loans/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -106,9 +101,7 @@ namespace LibraryData.Controllers
             return View(loan);
         }
 
-        // POST: Loans/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Date,BookId,MemberId")] Loan loan)
@@ -142,7 +135,6 @@ namespace LibraryData.Controllers
             return View(loan);
         }
 
-        // GET: Loans/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -162,7 +154,6 @@ namespace LibraryData.Controllers
             return View(loan);
         }
 
-        // POST: Loans/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

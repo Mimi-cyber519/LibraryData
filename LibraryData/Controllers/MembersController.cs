@@ -19,9 +19,18 @@ namespace LibraryData.Controllers
         }
 
         // GET: Members
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Members.ToListAsync());
+            var members = from m in _context.Members
+                          select m;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                members = members.Where(m => m.Name.Contains(searchString) ||
+                                           m.PhoneNum.Contains(searchString));
+            }
+
+            return View(await members.ToListAsync());
         }
 
         // GET: Members/Details/5
@@ -33,7 +42,10 @@ namespace LibraryData.Controllers
             }
 
             var member = await _context.Members
+                .Include(m => m.Loans)
+                    .ThenInclude(l => l.Book)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (member == null)
             {
                 return NotFound();
@@ -49,17 +61,16 @@ namespace LibraryData.Controllers
         }
 
         // POST: Members/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Address,PhoneNum")] Member member)
         {
-
+            if (ModelState.IsValid)
+            {
                 _context.Add(member);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            
+            }
             return View(member);
         }
 
@@ -80,8 +91,6 @@ namespace LibraryData.Controllers
         }
 
         // POST: Members/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Address,PhoneNum")] Member member)
@@ -91,7 +100,8 @@ namespace LibraryData.Controllers
                 return NotFound();
             }
 
- 
+            if (ModelState.IsValid)
+            {
                 try
                 {
                     _context.Update(member);
@@ -109,7 +119,7 @@ namespace LibraryData.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            
+            }
             return View(member);
         }
 
@@ -140,9 +150,8 @@ namespace LibraryData.Controllers
             if (member != null)
             {
                 _context.Members.Remove(member);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

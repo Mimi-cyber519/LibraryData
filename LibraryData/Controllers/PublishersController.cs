@@ -18,7 +18,7 @@ namespace LibraryData.Controllers
             _context = context;
         }
 
-        // GET: Publishers
+  
         public async Task<IActionResult> Index(string searchString)
         {
             var publishers = _context.Publishers.AsQueryable();
@@ -30,7 +30,7 @@ namespace LibraryData.Controllers
 
             return View(await publishers.ToListAsync());
         }
-        // GET: Publishers/Details/5
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -48,15 +48,11 @@ namespace LibraryData.Controllers
             return View(publisher);
         }
 
-        // GET: Publishers/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Publishers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Publisher publisher)
@@ -69,7 +65,6 @@ namespace LibraryData.Controllers
             return View(publisher);
         }
 
-        // GET: Publishers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,9 +80,7 @@ namespace LibraryData.Controllers
             return View(publisher);
         }
 
-        // POST: Publishers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Publisher publisher)
@@ -119,7 +112,6 @@ namespace LibraryData.Controllers
             return View(publisher);
         }
 
-        // GET: Publishers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,7 +129,7 @@ namespace LibraryData.Controllers
             return View(publisher);
         }
 
-        // POST: Publishers/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

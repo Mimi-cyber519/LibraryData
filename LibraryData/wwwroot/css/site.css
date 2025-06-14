@@ -20,3 +20,40 @@ html {
 body {
   margin-bottom: 60px;
 }
+.navbar {
+    padding: 0.8rem 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    padding: 0.5rem 1rem;
+    margin: 0 0.2rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+    }
+
+.navbar-toggler {
+    border: none;
+}
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+
+.bg-primary {
+    background-color: #6f42c1 !important;
+}
+
+.btn-outline-light:hover {
+    color: #6f42c1 !important;
+    background-color: white;
+}

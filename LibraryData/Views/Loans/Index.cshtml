@@ -7,34 +7,34 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="display-4 text-primary">
-            <i class="fas fa-exchange-alt me-2"></i>Book Loans
+            <i class="fas fa-exchange-alt me-2"></i>Выдачи книг
         </h1>
         <a asp-action="Create" class="btn btn-success">
-            <i class="fas fa-plus-circle me-2"></i>New Loan
+            <i class="fas fa-plus-circle me-2"></i>Добавить выдачу
         </a>
     </div>
 
     <!-- Search Section -->
     <div class="card shadow mb-4 border-0">
         <div class="card-header bg-light py-3">
-            <h5 class="m-0 text-secondary"><i class="fas fa-search me-2"></i>Find Loans</h5>
+            <h5 class="m-0 text-secondary"><i class="fas fa-search me-2"></i>Найти выдачу</h5>
         </div>
         <div class="card-body">
             <form asp-action="Index" method="get" class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">Book Title</label>
-                    <input type="text" name="bookTitle" class="form-control" placeholder="Search by book..." />
+                    <label class="form-label">Название книги</label>
+                    <input type="text" name="bookTitle" class="form-control" placeholder="Искать по книге..." />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Member Name</label>
-                    <input type="text" name="memberName" class="form-control" placeholder="Search by member..." />
+                    <label class="form-label">Имя читателя</label>
+                    <input type="text" name="memberName" class="form-control" placeholder="Искать по читателю..." />
                 </div>
                 <div class="col-12 text-end">
                     <button type="submit" class="btn btn-primary me-2">
-                        <i class="fas fa-search me-2"></i>Search
+                        <i class="fas fa-search me-2"></i>Искать
                     </button>
                     <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="fas fa-redo me-2"></i>Reset
+                        <i class="fas fa-redo me-2"></i>Сбросить
                     </a>
                 </div>
             </form>
@@ -48,10 +48,10 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="ps-4">Loan Date</th>
-                            <th>Book</th>
-                            <th>Member</th>
-                            <th class="text-end pe-4">Actions</th>
+                            <th class="ps-4">Дата выдачи</th>
+                            <th>Книга</th>
+                            <th>Читатель</th>
+                            <th class="text-end pe-4">Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -121,8 +121,8 @@
                 <div class="d-flex align-items-center">
                     <i class="fas fa-exchange-alt me-3 fa-2x"></i>
                     <div>
-                        <h4 class="alert-heading">No loans found!</h4>
-                        <p>Your search didn't match any book loans. Try different filters or <a asp-action="Create" class="alert-link">create a new loan</a>.</p>
+                        <h4 class="alert-heading">По вашему запросу ничего не найдено!</h4>
+                        <p>По вашему запросу не найдено ни одной выдачи. Попробуйте другой запрос или <a asp-action="Create" class="alert-link">создайте новую выдачу</a>.</p>
                     </div>
                 </div>
             </div>

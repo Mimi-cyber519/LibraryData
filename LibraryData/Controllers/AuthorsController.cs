@@ -18,12 +18,9 @@ namespace LibraryData.Controllers
             _context = context;
         }
 
-        // GET: Authors
-        // Controller (add this new action)
         public async Task<IActionResult> Index(string searchString)
         {
-            var authors = from a in _context.Authors
-                          select a;
+            var authors = _context.Authors.AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -32,8 +29,6 @@ namespace LibraryData.Controllers
 
             return View(await authors.ToListAsync());
         }
-
-        // GET: Authors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -51,15 +46,11 @@ namespace LibraryData.Controllers
             return View(author);
         }
 
-        // GET: Authors/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Authors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Author author)
@@ -72,7 +63,6 @@ namespace LibraryData.Controllers
             return View(author);
         }
 
-        // GET: Authors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -88,9 +78,6 @@ namespace LibraryData.Controllers
             return View(author);
         }
 
-        // POST: Authors/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Author author)
@@ -121,7 +108,6 @@ namespace LibraryData.Controllers
             return View(author);
         }
 
-        // GET: Authors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -139,20 +125,19 @@ namespace LibraryData.Controllers
             return View(author);
         }
 
-        // POST: Authors/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var author = await _context.Authors.FindAsync(id);
-        //    if (author != null)
-        //    {
-        //        _context.Authors.Remove(author);
-        //    }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var author = await _context.Authors.FindAsync(id);
+            if (author != null)
+            {
+                _context.Authors.Remove(author);
+            }
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
         private bool AuthorExists(int id)
         {
